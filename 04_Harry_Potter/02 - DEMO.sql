@@ -77,7 +77,7 @@ INSERT INTO [homeaddress]
            ((SELECT $node_ID FROM [address] WHERE addressID = 1), (SELECT $node_ID FROM [people] WHERE personID = 2), 'LivesAt' ), -- Bill
            ((SELECT $node_ID FROM [address] WHERE addressID = 1), (SELECT $node_ID FROM [people] WHERE personID = 3), 'LivesAt' ), -- Fleur
            ((SELECT $node_ID FROM [address] WHERE addressID = 1), (SELECT $node_ID FROM [people] WHERE personID = 4), 'LivesAt' ), -- George
-           ((SELECT $node_ID FROM [address] WHERE addressID = 4), (SELECT $node_ID FROM [people] WHERE personID = 5), 'Attends' ), -- Fred
+           ((SELECT $node_ID FROM [address] WHERE addressID = 1), (SELECT $node_ID FROM [people] WHERE personID = 5), 'LivesAt' ), -- Fred
            ((SELECT $node_ID FROM [address] WHERE addressID = 1), (SELECT $node_ID FROM [people] WHERE personID = 10), 'LivesAt' ), -- Percy
             -- Granger Household residents
            ((SELECT $node_ID FROM [address] WHERE addressID = 1), (SELECT $node_ID FROM [people] WHERE personID = 6), 'LivesAt' ), -- Ron
@@ -284,7 +284,7 @@ CREATE OR ALTER VIEW [vw_address] AS WITH Q AS (
 DROP VIEW IF EXISTS [vw_homeaddress]
 
 CREATE OR ALTER VIEW [vw_homeaddress] AS WITH Q AS (
-	SELECT homeaddress.[$edge_id_095D2324DC7E4C8EB916BE6D4CF788F5], homeaddress.[$from_id_99533FCE943D45ADB0DE6EEB05BCAE77], homeaddress.[$to_id_5DF03C9F05464731BC79BE32605BFDBC], relation FROM [homeaddress]
+	SELECT homeaddress.[$edge_id_C71837CE5D4B4A988D1523A021421028], homeaddress.[$from_id_B3806D2C86CF4CBB871C898D570AEE7F], homeaddress.[$to_id_AC82CB31F5EC4DFC9DB2274D398CD8A0], relation FROM [homeaddress]
 ) SELECT * FROM Q
 
 -- SELECT
