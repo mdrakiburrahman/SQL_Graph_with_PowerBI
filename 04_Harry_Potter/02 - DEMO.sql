@@ -6,7 +6,6 @@ USE [SQL_GRAPH_Weasley_Family]
 CREATE TABLE [dbo].[people](
     personID Int,
     [name] VARCHAR(100),
-    email VARCHAR(100),
     [image] VARCHAR(100)
 ) AS NODE;
 
@@ -14,7 +13,6 @@ CREATE TABLE [dbo].[people](
 CREATE TABLE [dbo].[address](
     addressID Int,
     ADDR VARCHAR(100),
-    PostCode VARCHAR(10),
     [image] VARCHAR(100)
 ) AS NODE;
 
@@ -52,15 +50,14 @@ INSERT INTO [people] (personID, [name], [image] )
            (14, 'Lily Luna Potter', 'Lily'),
            (15, 'Albus Severus Potter', 'Albus')
 
-
 SELECT *  FROM [dbo].[people]
 
 -- [dbo].[address]
-INSERT INTO [address] (addressID, [address], [image])
+INSERT INTO [address] (addressID, ADDR, [image])
     VALUES (1, 'The Burrow', '_Burrow'),
            (2, 'Godrics Hollow', '_Godric'),
            (3, 'Granger Household', '_Granger'),
-           (4, 'Hogwarts', '_Hogwarts'),
+           (4, 'Hogwarts', '_Hogwarts')
 
 SELECT *  FROM [dbo].[address]
 
@@ -112,19 +109,19 @@ INSERT INTO [parents]
            ((SELECT $node_ID FROM [people] WHERE personID = 1), (SELECT $node_ID FROM [people] WHERE personID = 11), 'father' ), -- Ginny
            ((SELECT $node_ID FROM [people] WHERE personID = 1), (SELECT $node_ID FROM [people] WHERE personID = 6), 'father' ), -- Ron
            ( -- Ginny
-            (SELECT $node_ID FROM [people] WHERE personID = 11), (SELECT $node_ID FROM [people] WHERE personID = ), 'mother' 13), -- James
-           ((SELECT $node_ID FROM [people] WHERE personID = 11), (SELECT $node_ID FROM [people] WHERE personID = ), 'mother' 14), -- Lily
-           ((SELECT $node_ID FROM [people] WHERE personID = 11), (SELECT $node_ID FROM [people] WHERE personID = ), 'mother' 15), -- Albus
+            (SELECT $node_ID FROM [people] WHERE personID = 11), (SELECT $node_ID FROM [people] WHERE personID = 13), 'mother' ), -- James
+           ((SELECT $node_ID FROM [people] WHERE personID = 11), (SELECT $node_ID FROM [people] WHERE personID = 14), 'mother' ), -- Lily
+           ((SELECT $node_ID FROM [people] WHERE personID = 11), (SELECT $node_ID FROM [people] WHERE personID = 15), 'mother' ), -- Albus
            ( -- Harry
-            (SELECT $node_ID FROM [people] WHERE personID = 12), (SELECT $node_ID FROM [people] WHERE personID = ), 'father' 13), -- James
-           ((SELECT $node_ID FROM [people] WHERE personID = 12), (SELECT $node_ID FROM [people] WHERE personID = ), 'father' 14), -- Lily
-           ((SELECT $node_ID FROM [people] WHERE personID = 12), (SELECT $node_ID FROM [people] WHERE personID = ), 'father' 15), -- Albus
+            (SELECT $node_ID FROM [people] WHERE personID = 12), (SELECT $node_ID FROM [people] WHERE personID = 13), 'father' ), -- James
+           ((SELECT $node_ID FROM [people] WHERE personID = 12), (SELECT $node_ID FROM [people] WHERE personID = 14), 'father' ), -- Lily
+           ((SELECT $node_ID FROM [people] WHERE personID = 12), (SELECT $node_ID FROM [people] WHERE personID = 15), 'father' ), -- Albus
            ( -- Hermione
-            (SELECT $node_ID FROM [people] WHERE personID = 7), (SELECT $node_ID FROM [people] WHERE personID = ), 'mother' 8), -- Hugo
-           ((SELECT $node_ID FROM [people] WHERE personID = 7), (SELECT $node_ID FROM [people] WHERE personID = ), 'mother' 9), -- Rose
+            (SELECT $node_ID FROM [people] WHERE personID = 7), (SELECT $node_ID FROM [people] WHERE personID = 8), 'mother' ), -- Hugo
+           ((SELECT $node_ID FROM [people] WHERE personID = 7), (SELECT $node_ID FROM [people] WHERE personID = 9), 'mother' ), -- Rose
            ( -- Ron
-            (SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = ), 'father' 8), -- Hugo
-           ((SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = ), 'father' 9) -- Rose
+            (SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = 8), 'father' ), -- Hugo
+           ((SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = 9), 'father' ) -- Rose
 
 SELECT *  FROM [dbo].[parents]
 
@@ -158,11 +155,11 @@ INSERT INTO [children]
             (SELECT $node_ID FROM [people] WHERE personID = 15), (SELECT $node_ID FROM [people] WHERE personID = 11), 'son' ), -- Ginny
            ((SELECT $node_ID FROM [people] WHERE personID = 15), (SELECT $node_ID FROM [people] WHERE personID = 12), 'son' ), -- Harry
            ( -- Hugo
-            (SELECT $node_ID FROM [people] WHERE personID = 8), (SELECT $node_ID FROM [people] WHERE personID = 11), 'son' 7), -- Hermione
-           ((SELECT $node_ID FROM [people] WHERE personID = 8), (SELECT $node_ID FROM [people] WHERE personID = 12), 'son' 6), -- Ron
+            (SELECT $node_ID FROM [people] WHERE personID = 8), (SELECT $node_ID FROM [people] WHERE personID = 7), 'son' ), -- Hermione
+           ((SELECT $node_ID FROM [people] WHERE personID = 8), (SELECT $node_ID FROM [people] WHERE personID = 6), 'son' ), -- Ron
            ( -- Rose
-            (SELECT $node_ID FROM [people] WHERE personID = 9), (SELECT $node_ID FROM [people] WHERE personID = 11), 'daughter' 7), -- Hermione
-           ((SELECT $node_ID FROM [people] WHERE personID = 9), (SELECT $node_ID FROM [people] WHERE personID = 12), 'daughter' 6) -- Ron
+            (SELECT $node_ID FROM [people] WHERE personID = 9), (SELECT $node_ID FROM [people] WHERE personID = 7), 'daughter' ), -- Hermione
+           ((SELECT $node_ID FROM [people] WHERE personID = 9), (SELECT $node_ID FROM [people] WHERE personID = 6), 'daughter' ) -- Ron
 
 SELECT *  FROM [dbo].[children]
 
@@ -203,7 +200,7 @@ INSERT INTO [siblings]
            ((SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = 10), 'brother' ), -- Percy
            ((SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = 4), 'brother' ), -- George
            ((SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = 5), 'brother' ), -- Fred
-           ((SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = 11), 'brother' ), -- Ginny
+           ((SELECT $node_ID FROM [people] WHERE personID = 6), (SELECT $node_ID FROM [people] WHERE personID = 11), 'brother' ) -- Ginny
 
 SELECT *  FROM [dbo].[siblings]
 
@@ -226,12 +223,12 @@ FROM people person1, siblings, people person2
 WHERE MATCH (person1 -(siblings) -> person2);
 
 -- Show address relationships
-SELECT FamilyMember.[name] as 'Family Member', homeaddress.[relation] as 'Status', [address].[ADDR] as 'Address', [address].[POSTCODE]
+SELECT FamilyMember.[name] as 'Family Member', homeaddress.[relation] as 'Status', [address].[ADDR] as 'Address'
 	FROM people FamilyMember, homeaddress, [address]
 	WHERE MATCH(FamilyMember <- (homeaddress) - [address])
 
 -- Show full family relationship down to address
-SELECT FamilyMember.[name] as 'Family Member', parents.[relation] as 'Family Relation', people.[name] as 'Child', siblings.[relation] as 'SiblingRelation', Sibling.[name] as 'Sibling', homeaddress.[relation], [address].[POSTCODE] as 'Postal Code'
+SELECT FamilyMember.[name] as 'Family Member', parents.[relation] as 'Family Relation', people.[name] as 'Child', siblings.[relation] as 'SiblingRelation', Sibling.[name] as 'Sibling', homeaddress.[relation], [address].[ADDR] as 'Address'
 	FROM people FamilyMember, parents, people, siblings, people Sibling, homeaddress, [address]
 	WHERE MATCH(FamilyMember - (parents) -> people - (siblings) -> Sibling <- (homeaddress) - [address])
 
@@ -256,13 +253,13 @@ SELECT * FROM [dbo].[vw_FamilyGraph_UNION];
 DROP VIEW IF EXISTS [vw_FamilyGraph_JOIN];
 
 CREATE VIEW [vw_FamilyGraph_JOIN] AS
-	SELECT FamilyMember.[$node_id_7781E2B43B88456F8BE0A5EC45688DEA] as FamilyId, FamilyMember.[name] as 'Family Member', 
+	SELECT FamilyMember.[$node_id_03107F99F090448FA423C5CBD6F05308] as FamilyId, FamilyMember.[name] as 'Family Member', 
 		   parents.[relation] as 'Family Relation', 
 		   FamilyMember.[image] as 'Family Image',
-		   people.[$node_id_7781E2B43B88456F8BE0A5EC45688DEA] as PeopleID, people.[name] as 'Child',
+		   people.[$node_id_03107F99F090448FA423C5CBD6F05308] as PeopleID, people.[name] as 'Child',
 		   people.[image] as 'Child Image',
 		   siblings.[relation] as 'Sibling Relation', 
-		   Sibling.[$node_id_7781E2B43B88456F8BE0A5EC45688DEA] as SiblingID, Sibling.[name] as 'Sibling',
+		   Sibling.[$node_id_03107F99F090448FA423C5CBD6F05308] as SiblingID, Sibling.[name] as 'Sibling',
 		   Sibling.[image] as 'Sibling Image'
 		FROM people FamilyMember, parents, people, siblings, people Sibling
 		WHERE MATCH(FamilyMember - (parents) -> people - (siblings) -> Sibling);
@@ -273,21 +270,21 @@ SELECT * FROM [dbo].[vw_FamilyGraph_JOIN];
 DROP VIEW IF EXISTS [vw_people];
 
 CREATE OR ALTER VIEW [vw_people] AS WITH Q AS (
-	SELECT people.[$node_id_7781E2B43B88456F8BE0A5EC45688DEA], email, [name], personID, [image] FROM people
+	SELECT people.[$node_id_03107F99F090448FA423C5CBD6F05308], [name], personID, [image] FROM people
 ) SELECT * FROM Q
 
 -- NODE: Address view
 DROP VIEW IF EXISTS [vw_address]
 
 CREATE OR ALTER VIEW [vw_address] AS WITH Q AS (
-	SELECT address.[$node_id_F1AF0424911E4295AD0C9DB87DA64E1D], addressID, ADDR, PostCode, [image] FROM [address]
+	SELECT address.[$node_id_ACE9B85C374B41C081C45D7A75449FA5], addressID, ADDR, [image] FROM [address]
 ) SELECT * FROM Q
 
 -- EDGE: homeaddress view
 DROP VIEW IF EXISTS [vw_homeaddress]
 
 CREATE OR ALTER VIEW [vw_homeaddress] AS WITH Q AS (
-	SELECT homeaddress.[$edge_id_03D94B7EFEBC42DC8A450D313FBADA33], homeaddress.[$from_id_43BC1D51373A4B2C9AC54A83DFC3305B], homeaddress.[$to_id_17F46E85980B45A6AD82D3A1EB783D2E], relation FROM [homeaddress]
+	SELECT homeaddress.[$edge_id_095D2324DC7E4C8EB916BE6D4CF788F5], homeaddress.[$from_id_99533FCE943D45ADB0DE6EEB05BCAE77], homeaddress.[$to_id_5DF03C9F05464731BC79BE32605BFDBC], relation FROM [homeaddress]
 ) SELECT * FROM Q
 
 -- SELECT
