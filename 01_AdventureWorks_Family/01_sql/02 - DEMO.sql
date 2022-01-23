@@ -194,6 +194,7 @@ CREATE OR ALTER VIEW [vw_homeaddress] AS WITH Q AS (
 ) SELECT * FROM Q
 
 -- SELECT
-SELECT * FROM [vw_people];
-SELECT * FROM [vw_homeaddress];
 SELECT * FROM [vw_address];
+SELECT * FROM [vw_homeaddress];
+SELECT * FROM [vw_people];
+SELECT * FROM [dbo].[vw_FamilyGraph_JOIN];
