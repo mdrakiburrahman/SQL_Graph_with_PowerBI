@@ -3,3 +3,5 @@
 .vs/SQL_Graph_with_PowerBI/v15/.ssms_suo
 .vs/VSWorkspaceState.json
 01_AdventureWorks_Family/01_sql/.vs/slnx.sqlite
+*.pbix
+02_PBI/forceGraph.ForceGraph1449359463895.2.0.2.0.pbiviz

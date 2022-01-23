@@ -143,10 +143,12 @@ SELECT FamilyMember.[name] as 'Family Member', parents.[relation] as 'Family Rel
 	WHERE MATCH(FamilyMember - (parents) -> people - (siblings) -> Sibling <- (homeaddress) - [address])
 
 /* ========================
-    Views
+    Views for Power BI
    ======================== */
 -- Union all relationships in family
-CREATE VIEW [vw_FamilyGraph_Union] AS
+DROP VIEW IF EXISTS [vw_FamilyGraph_UNION];
+
+CREATE VIEW [vw_FamilyGraph_UNION] AS
 	SELECT FamilyMember.[name] as 'Family Member 1', children.[relation] as ' has a ', people.[name] as 'Family Member 2'
 		FROM people FamilyMember, children, people
 		WHERE MATCH (FamilyMember <- (children) - people)
@@ -155,12 +157,43 @@ CREATE VIEW [vw_FamilyGraph_Union] AS
 		FROM people FamilyMember, siblings, people
 		WHERE MATCH (FamilyMember <- (siblings) - people);
 
-SELECT * FROM [dbo].[vw_FamilyGraph_Union];
+SELECT * FROM [dbo].[vw_FamilyGraph_UNION];
 
 -- Join parental and sibling relationship
-CREATE VIEW [vw_FamilyGraph_Join] AS
-	SELECT FamilyMember.[name] as 'Family Member', parents.[relation] as 'Family Relation', people.[name] as 'Child', siblings.[relation] as 'Sibling Relation', Sibling.[name] as 'Sibling'
+DROP VIEW IF EXISTS [vw_FamilyGraph_JOIN];
+
+CREATE VIEW [vw_FamilyGraph_JOIN] AS
+	SELECT FamilyMember.[$node_id_9A6927B4DA7A4AC98243311EB28EEB05] as FamilyId, FamilyMember.[name] as 'Family Member', 
+		   parents.[relation] as 'Family Relation', 
+		   people.[$node_id_9A6927B4DA7A4AC98243311EB28EEB05] as PeopleID, people.[name] as 'Child', siblings.[relation] as 'Sibling Relation', 
+		   Sibling.[$node_id_9A6927B4DA7A4AC98243311EB28EEB05] as SiblingID, Sibling.[name] as 'Sibling'
 		FROM people FamilyMember, parents, people, siblings, people Sibling
 		WHERE MATCH(FamilyMember - (parents) -> people - (siblings) -> Sibling);
 
-SELECT * FROM [dbo].[vw_FamilyGraph_Join]
+SELECT * FROM [dbo].[vw_FamilyGraph_JOIN];
+
+-- NODE: People view
+DROP VIEW IF EXISTS [vw_people];
+
+CREATE OR ALTER VIEW [vw_people] AS WITH Q AS (
+	SELECT people.[$node_id_9A6927B4DA7A4AC98243311EB28EEB05], email, [name], personID FROM people
+) SELECT * FROM Q
+
+-- NODE: Address view
+DROP VIEW IF EXISTS [vw_address]
+
+CREATE OR ALTER VIEW [vw_address] AS WITH Q AS (
+	SELECT address.[$node_id_A07BD1CED4C94BD394CB2AF9B88B2690], addressID, ADDR, PostCode FROM [address]
+) SELECT * FROM Q
+
+-- EDGE: homeaddress view
+DROP VIEW IF EXISTS [vw_homeaddress]
+
+CREATE OR ALTER VIEW [vw_homeaddress] AS WITH Q AS (
+	SELECT homeaddress.[$edge_id_5200B68F1532440F8D6CF3D19BAA429E], homeaddress.[$from_id_A8D0126F781C4676AB9725AF17CA35A5], homeaddress.[$to_id_0E264F76633D40F398377A8B97D45DFB], relation FROM [homeaddress]
+) SELECT * FROM Q
+
+-- SELECT
+SELECT * FROM [vw_people];
+SELECT * FROM [vw_homeaddress];
+SELECT * FROM [vw_address];
