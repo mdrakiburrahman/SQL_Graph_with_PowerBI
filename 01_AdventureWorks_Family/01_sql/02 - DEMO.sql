@@ -6,14 +6,16 @@ USE [SQL_GRAPH_AdventureWorks_Family]
 CREATE TABLE [dbo].[people](
     personID Int,
     [name] VARCHAR(100),
-    email VARCHAR(100)
+    email VARCHAR(100),
+	[image] VARCHAR(100)
 ) AS NODE;
 
 --  [dbo].[address]
 CREATE TABLE [dbo].[address](
     addressID Int,
     ADDR VARCHAR(100),
-    PostCode VARCHAR(10)
+    PostCode VARCHAR(10),
+	[image] VARCHAR(100)
 ) AS NODE;
 
 /* ========================
@@ -32,19 +34,19 @@ CREATE TABLE [dbo].[siblings] (relation VARCHAR(100)) AS EDGE;
     Populate NODE tables
    ======================== */
 -- [dbo].people
-INSERT INTO [people] (personID, [name], email )
-    VALUES (0, 'Debbie Williams', 'd.Williams@adventure-works.com'),
-           (1, 'Bert Williams', 'b.Williams@adventure-works.com'),
-           (2, 'Rob Williams', 'r.Williams@adventure-works.com'),
-           (3, 'Tina Williams', 't.Williams@adventure-works.com'),
-           (4, 'Jane Williams', 'j.Williams@adventure-works.com')
+INSERT INTO [people] (personID, [name], email, [image] )
+    VALUES (0, 'Debbie Williams', 'd.Williams@adventure-works.com', 'Debbie'),
+           (1, 'Bert Williams', 'b.Williams@adventure-works.com', 'Bert'),
+           (2, 'Rob Williams', 'r.Williams@adventure-works.com', 'Rob'),
+           (3, 'Tina Williams', 't.Williams@adventure-works.com', 'Tina'),
+           (4, 'Jane Williams', 'j.Williams@adventure-works.com', 'Jane')
 
 SELECT *  FROM [dbo].[people]
 
 -- [dbo].[address]
-INSERT INTO [address] (addressID, ADDR, PostCode)
-    VALUES (1, 'MyHouse', 'RG1 2TT'),
-           (2, 'MyFlat', 'RG11 4TT')
+INSERT INTO [address] (addressID, ADDR, PostCode, [image])
+    VALUES (1, 'MyHouse', 'RG1 2TT', 'House'),
+           (2, 'MyFlat', 'RG11 4TT', 'Apartment')
 
 SELECT *  FROM [dbo].[address]
 
@@ -163,10 +165,14 @@ SELECT * FROM [dbo].[vw_FamilyGraph_UNION];
 DROP VIEW IF EXISTS [vw_FamilyGraph_JOIN];
 
 CREATE VIEW [vw_FamilyGraph_JOIN] AS
-	SELECT FamilyMember.[$node_id_9A6927B4DA7A4AC98243311EB28EEB05] as FamilyId, FamilyMember.[name] as 'Family Member', 
+	SELECT FamilyMember.[$node_id_7781E2B43B88456F8BE0A5EC45688DEA] as FamilyId, FamilyMember.[name] as 'Family Member', 
 		   parents.[relation] as 'Family Relation', 
-		   people.[$node_id_9A6927B4DA7A4AC98243311EB28EEB05] as PeopleID, people.[name] as 'Child', siblings.[relation] as 'Sibling Relation', 
-		   Sibling.[$node_id_9A6927B4DA7A4AC98243311EB28EEB05] as SiblingID, Sibling.[name] as 'Sibling'
+		   FamilyMember.[image] as 'Family Image',
+		   people.[$node_id_7781E2B43B88456F8BE0A5EC45688DEA] as PeopleID, people.[name] as 'Child',
+		   people.[image] as 'Child Image',
+		   siblings.[relation] as 'Sibling Relation', 
+		   Sibling.[$node_id_7781E2B43B88456F8BE0A5EC45688DEA] as SiblingID, Sibling.[name] as 'Sibling',
+		   Sibling.[image] as 'Sibling Image'
 		FROM people FamilyMember, parents, people, siblings, people Sibling
 		WHERE MATCH(FamilyMember - (parents) -> people - (siblings) -> Sibling);
 
@@ -176,21 +182,21 @@ SELECT * FROM [dbo].[vw_FamilyGraph_JOIN];
 DROP VIEW IF EXISTS [vw_people];
 
 CREATE OR ALTER VIEW [vw_people] AS WITH Q AS (
-	SELECT people.[$node_id_9A6927B4DA7A4AC98243311EB28EEB05], email, [name], personID FROM people
+	SELECT people.[$node_id_7781E2B43B88456F8BE0A5EC45688DEA], email, [name], personID, [image] FROM people
 ) SELECT * FROM Q
 
 -- NODE: Address view
 DROP VIEW IF EXISTS [vw_address]
 
 CREATE OR ALTER VIEW [vw_address] AS WITH Q AS (
-	SELECT address.[$node_id_A07BD1CED4C94BD394CB2AF9B88B2690], addressID, ADDR, PostCode FROM [address]
+	SELECT address.[$node_id_F1AF0424911E4295AD0C9DB87DA64E1D], addressID, ADDR, PostCode, [image] FROM [address]
 ) SELECT * FROM Q
 
 -- EDGE: homeaddress view
 DROP VIEW IF EXISTS [vw_homeaddress]
 
 CREATE OR ALTER VIEW [vw_homeaddress] AS WITH Q AS (
-	SELECT homeaddress.[$edge_id_5200B68F1532440F8D6CF3D19BAA429E], homeaddress.[$from_id_A8D0126F781C4676AB9725AF17CA35A5], homeaddress.[$to_id_0E264F76633D40F398377A8B97D45DFB], relation FROM [homeaddress]
+	SELECT homeaddress.[$edge_id_03D94B7EFEBC42DC8A450D313FBADA33], homeaddress.[$from_id_43BC1D51373A4B2C9AC54A83DFC3305B], homeaddress.[$to_id_17F46E85980B45A6AD82D3A1EB783D2E], relation FROM [homeaddress]
 ) SELECT * FROM Q
 
 -- SELECT
